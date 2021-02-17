@@ -48,7 +48,7 @@
 
 function res = nr_sch_link_level_sim(frame_cfg, sim_dur_slots, UE, N_ant_eNB_RX, channel, SNR,N_rru)
 N_rru_dly=[0,25,40,100,150,200,250,300,50];
-N_rru_coe=[1,0,0,0,0.027,0.26,0.2,0.1];
+N_rru_coe=[1,0.4,0.3,0.1,0.027,0.26,0.2,0.1];
 
 if nargin==6
     N_rru=1;

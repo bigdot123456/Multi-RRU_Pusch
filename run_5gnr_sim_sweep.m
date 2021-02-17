@@ -7,8 +7,8 @@ addpath('mex','estimation','fading','modulation','nr_codec','nr_common','nr_phy'
 DebugLink=1;
 N_rru=1;
 
-SNR = 20.0;
-MCS = 10;
+SNR = 30.0;
+MCS = 25;
 sim_dur_slots = 1; %% total slot number for test, eg 20/100
 
 %% NR RF&frequency parameter
