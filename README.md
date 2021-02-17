@@ -28,4 +28,14 @@ cd mex
 make_mex
 ```
 
-Compilation of the mex functions is not mandatory to run the simulation, but the execution time grows drastically without the acceleration.# Multi-RRU_Pusch
+Compilation of the mex functions is not mandatory to run the simulation, but the execution time grows drastically without the acceleration.
+# Multi-RRU_Pusch command
+```
+  git init
+  git add .
+  git commit -m "add more files for pusch"
+  git remote add origin https://github.com/bigdot123456/Multi-RRU_Pusch.git
+  git push -u origin master
+  git pull
+```
+
