@@ -46,12 +46,13 @@
 
 % Copyright 2018 Grzegorz Cisek (grzegorzcisek@gmail.com)
 
-function res = nr_sch_link_level_sim(frame_cfg, sim_dur_slots, UE, N_ant_eNB_RX, channel, SNR,N_rru)
-N_rru_dly=[0,25,40,100,150,200,250,300,50];
-N_rru_coe=[1,0,0,0,0.027,0.26,0.2,0.1];
+function res = nr_sch_link_level_sim(frame_cfg, sim_dur_slots, UE, N_ant_eNB_RX, channel, SNR,N_rru,N_rru_dly,N_rru_coe)
+
 
 if nargin==6
     N_rru=1;
+    N_rru_dly=[0,25,40,100,150,200,250,300,50];
+    N_rru_coe=[1,0.2,0.1,01,0.027,0.26,0.2,0.1];
 else
     if nargin<6
         fprintf('Not enought input arguement! Please use help command!\n');
@@ -86,14 +87,14 @@ for n_slot = 0 : sim_dur_slots-1
         x_tx = nr_pusch_transmit(UE(i).g, UE(i).Q_m, UE(i).N_layer, frame_cfg, n_slot_frame, UE(i).PUSCH_symbol_start, UE(i).PUSCH_sched_RB_offset, UE(i).PUSCH_sched_RB_num, UE(i).antenna_ports, UE(i).higher_layer_parameters, 0, 0);
         
         %debug info
-        scatter(real(x_tx(:,2,1)),imag(x_tx(:,2,1)));
+        %scatter(real(x_tx(:,2,1)),imag(x_tx(:,2,1)));
         UE(i).y_tx = nr_ofdma_modulator(x_tx, frame_cfg, n_slot_frame);
         for n_tx = 1 : size(UE(i).y_tx,2)
             UE(i).y_tx(:,n_tx) = conv(UE(i).y_tx(:,n_tx), UE(i).tx_filter', 'same');
         end
     end
     
-    plot(20*log10(abs(UE(i).y_tx(:,2,1))))
+    %plot(20*log10(abs(UE(i).y_tx(:,2,1))))
     
     %% Wireless Channel
     y_tx = zeros(size(UE(1).y_tx));

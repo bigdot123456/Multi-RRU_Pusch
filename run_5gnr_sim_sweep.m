@@ -2,13 +2,15 @@
 close all;
 clear;
 %clc;
-addpath('mex','estimation','fading','modulation','nr_codec','nr_common','nr_phy','utils');
+addpath('mex','estimation','fading','modulation','nr_codec','nr_common','nr_phy','utils','tools','OFDM_STOCFO');
 %% set parameter
 DebugLink=1;
-N_rru=1;
+N_rru=2;
+N_rru_dly=[0,60,40,100,150,200,250,300,50];
+N_rru_coe=[1,0.2,0.1,01,0.027,0.26,0.2,0.1];
 
 SNR = 30.0;
-MCS = 25;
+MCS = 18;
 sim_dur_slots = 1; %% total slot number for test, eg 20/100
 
 %% NR RF&frequency parameter
@@ -25,8 +27,8 @@ hlp.UL_DMRS_add_pos = 1; % 0 - 3
 
 alg = nr_algorithms_struct();
 alg.chan_est = 'MMSE'; % 'LS'
-alg.sto_est = 'dft'; % 'prony'
-alg.cfo_est = 'none'; % 'prony'
+alg.sto_est = 'prony';%'dft'; % 'prony'
+alg.cfo_est = 'prony';%'none'; % 'prony'
 alg.equalizer = 'MMSE'; % 'ZF'
 alg.chan_est_avg = [3,0];
 alg.demodulation_method = 'Approx LLR';
@@ -61,11 +63,11 @@ UE(1).PUSCH_symbols_sched = 13;
 UE(1).tx_filter = radio_filter(153, frame_cfg);
 UE(1).higher_layer_parameters = hlp;
 UE(1).algorithms = alg;
-
+%% simulation for debug
 rng(0);
 fprintf("Test with %d RRU:\n",N_rru);
 if DebugLink
-  res=nr_sch_link_level_sim(frame_cfg, sim_dur_slots, UE, N_ant_eNB_RX, channel, SNR,N_rru)
+  res=nr_sch_link_level_sim(frame_cfg, sim_dur_slots, UE, N_ant_eNB_RX, channel, SNR,N_rru,N_rru_dly,N_rru_coe)
   saveBler(res,SNR,MCS,N_rru);
 else
   SNR = -10 : 2 : 25; %-10 : 1 : 25;
@@ -76,11 +78,11 @@ else
       fprintf('Now simulate MCS=%d with SNR=%d,',MCS(j),SNR(i));
       UEl = UE(1);
       UEl.I_mcs = MCS(j);
-      res(i,j) = nr_sch_link_level_sim(frame_cfg, sim_dur_slots, UEl, N_ant_eNB_RX, channel, SNR(i),N_rru);
+      res(i,j) = nr_sch_link_level_sim(frame_cfg, sim_dur_slots, UEl, N_ant_eNB_RX, channel, SNR(i),N_rru,N_rru_dly,N_rru_coe);
       fprintf(' result Bler=%f\n',res(i,j).BLER);
     end
   end
-  
+  %% plot result
   saveBler(res,SNR,MCS,N_rru);
   figure; hold on;
   for j = 1 : length(MCS)
